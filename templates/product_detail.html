@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}{{ product.name }} - Seven Sundays Stores{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
 <div class="container py-5">
     <!-- Breadcrumb Navigation -->
     <nav aria-label="breadcrumb">
@@ -18,24 +19,182 @@
         <!-- Product Images -->
         <div class="col-lg-6">
             <div class="card mb-4">
-                <div class="card-body">
-                    <!-- Main Image -->
-                    <div class="text-center mb-3">
+               
+
+            <div class="card-body">
+                <!-- Main Image -->
+                <div class="text-center mb-3">
+                    <div class="product-image-container" id="imageContainer">
                         <img id="mainProductImage" src="{{ product.images.first.image.url }}" 
-                             class="img-fluid" style="max-height: 400px; object-fit: contain;" 
-                             alt="{{ product.images.first.alt_text|default:product.name }}">
-                    </div>
-                    
-                    <!-- Thumbnail Gallery -->
-                    <div class="d-flex flex-wrap gap-2">
-                        {% for image in product.images.all %}
-                        <a href="#" class="thumbnail" data-image="{{ image.image.url }}" data-alt="{{ image.alt_text|default:product.name }}">
-                            <img src="{{ image.image.url }}" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;" 
-                                 alt="{{ image.alt_text|default:product.name }}">
-                        </a>
-                        {% endfor %}
+                            class="img-fluid" 
+                            alt="{{ product.images.first.alt_text|default:product.name }}"
+                            data-zoom-src="{{ product.images.first.image.url }}">
+                        
+                        <!-- Zoom Lens -->
+                        <div class="zoom-lens" id="zoomLens"></div>
+                        
+                        <!-- Zoom Result -->
+                        <div class="zoom-result" id="zoomResult">
+                            <img id="zoomImage" src="{{ product.images.first.image.url }}" alt="Zoomed view">
+                        </div>
+                        
+                        <!-- Zoom Indicator -->
+                        <div class="zoom-indicator">
+                            <i class="bi bi-search"></i> Hover to zoom
+                        </div>
                     </div>
                 </div>
+                
+                <!-- Thumbnail Gallery -->
+                <div class="d-flex flex-wrap gap-2 justify-content-center">
+                    {% for image in product.images.all %}
+                    <a href="#" class="thumbnail {% if forloop.first %}active{% endif %}" 
+                    data-image="{{ image.image.url }}" 
+                    data-alt="{{ image.alt_text|default:product.name }}">
+                        <img src="{{ image.image.url }}" class="img-thumbnail" 
+                            alt="{{ image.alt_text|default:product.name }}">
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Image Modal -->
+            <div class="image-modal" id="imageModal">
+                <div class="modal-content-custom">
+                    <span class="close-modal" id="closeModal">&times;</span>
+                    <img class="modal-image" id="modalImage" src="" alt="">
+                    <div class="text-center mt-3">
+                        <p class="mb-0 text-muted">Click outside or press ESC to close</p>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const mainImage = document.getElementById('mainProductImage');
+                const imageContainer = document.getElementById('imageContainer');
+                const zoomLens = document.getElementById('zoomLens');
+                const zoomResult = document.getElementById('zoomResult');
+                const zoomImage = document.getElementById('zoomImage');
+                const thumbnails = document.querySelectorAll('.thumbnail');
+                const modal = document.getElementById('imageModal');
+                const modalImage = document.getElementById('modalImage');
+                const closeModal = document.getElementById('closeModal');
+                
+                // Thumbnail click functionality
+                thumbnails.forEach(thumbnail => {
+                    thumbnail.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        // Remove active class from all thumbnails
+                        thumbnails.forEach(t => t.classList.remove('active'));
+                        
+                        // Add active class to clicked thumbnail
+                        this.classList.add('active');
+                        
+                        // Update main image
+                        const newImageSrc = this.getAttribute('data-image');
+                        const newImageAlt = this.getAttribute('data-alt');
+                        
+                        mainImage.src = newImageSrc;
+                        mainImage.alt = newImageAlt;
+                        zoomImage.src = newImageSrc;
+                        zoomImage.alt = newImageAlt;
+                    });
+                });
+                
+                // Zoom functionality
+                let zoomRatio = 2.5;
+                
+                imageContainer.addEventListener('mouseenter', function() {
+                    if (window.innerWidth > 768) {
+                        zoomResult.style.display = 'block';
+                        zoomLens.style.display = 'block';
+                    }
+                });
+                
+                imageContainer.addEventListener('mouseleave', function() {
+                    zoomResult.style.display = 'none';
+                    zoomLens.style.display = 'none';
+                });
+                
+                imageContainer.addEventListener('mousemove', function(e) {
+                    if (window.innerWidth <= 768) return;
+                    
+                    const rect = imageContainer.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    // Calculate lens position
+                    const lensX = x - zoomLens.offsetWidth / 2;
+                    const lensY = y - zoomLens.offsetHeight / 2;
+                    
+                    // Boundary checks for lens
+                    const maxLensX = rect.width - zoomLens.offsetWidth;
+                    const maxLensY = rect.height - zoomLens.offsetHeight;
+                    
+                    const boundedLensX = Math.max(0, Math.min(lensX, maxLensX));
+                    const boundedLensY = Math.max(0, Math.min(lensY, maxLensY));
+                    
+                    // Position lens
+                    zoomLens.style.left = boundedLensX + 'px';
+                    zoomLens.style.top = boundedLensY + 'px';
+                    
+                    // Calculate zoom image position
+                    const zoomX = -(boundedLensX * zoomRatio);
+                    const zoomY = -(boundedLensY * zoomRatio);
+                    
+                    // Position zoomed image
+                    zoomImage.style.left = zoomX + 'px';
+                    zoomImage.style.top = zoomY + 'px';
+                });
+                
+                // Modal functionality
+                mainImage.addEventListener('click', function() {
+                    modal.style.display = 'block';
+                    modalImage.src = this.src;
+                    modalImage.alt = this.alt;
+                    document.body.style.overflow = 'hidden';
+                });
+                
+                closeModal.addEventListener('click', function() {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                });
+                
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+                
+                // Keyboard navigation
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && modal.style.display === 'block') {
+                        modal.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+                
+                // Touch support for mobile
+                imageContainer.addEventListener('touchstart', function(e) {
+                    if (window.innerWidth <= 768) {
+                        e.preventDefault();
+                        modal.style.display = 'block';
+                        modalImage.src = mainImage.src;
+                        modalImage.alt = mainImage.alt;
+                        document.body.style.overflow = 'hidden';
+                    }
+                });
+                
+                // Preload images for better performance
+                thumbnails.forEach(thumbnail => {
+                    const img = new Image();
+                    img.src = thumbnail.getAttribute('data-image');
+                });
+            });
+            </script>
             </div>
         </div>
 

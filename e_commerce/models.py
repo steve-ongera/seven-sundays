@@ -10,7 +10,7 @@ import uuid
 class User(AbstractUser):
     """Extended user model"""
     email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=20, blank=True)
+    phone = models.CharField(max_length=100, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
     is_verified = models.BooleanField(default=False)
     
@@ -228,9 +228,9 @@ class Address(models.Model):
     address_line_2 = models.CharField(max_length=200, blank=True)
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
-    postal_code = models.CharField(max_length=20)
+    postal_code = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
-    phone = models.CharField(max_length=20, blank=True)
+    phone = models.CharField(max_length=100, blank=True)
     is_default = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -320,9 +320,9 @@ class Order(models.Model):
         ('refunded', 'Refunded'),
     ]
 
-    order_number = models.CharField(max_length=20, unique=True)
+    order_number = models.CharField(max_length=100, unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='pending')
     subtotal = models.DecimalField(max_digits=10, decimal_places=2)
     tax_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     shipping_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
@@ -334,12 +334,12 @@ class Order(models.Model):
     billing_first_name = models.CharField(max_length=50)
     billing_last_name = models.CharField(max_length=50)
     billing_email = models.EmailField()
-    billing_phone = models.CharField(max_length=20)
+    billing_phone = models.CharField(max_length=100)
     billing_address_line_1 = models.CharField(max_length=200)
     billing_address_line_2 = models.CharField(max_length=200, blank=True)
     billing_city = models.CharField(max_length=100)
     billing_state = models.CharField(max_length=100)
-    billing_postal_code = models.CharField(max_length=20)
+    billing_postal_code = models.CharField(max_length=100)
     billing_country = models.CharField(max_length=100)
     
     # Shipping Address
@@ -349,7 +349,7 @@ class Order(models.Model):
     shipping_address_line_2 = models.CharField(max_length=200, blank=True)
     shipping_city = models.CharField(max_length=100)
     shipping_state = models.CharField(max_length=100)
-    shipping_postal_code = models.CharField(max_length=20)
+    shipping_postal_code = models.CharField(max_length=100)
     shipping_country = models.CharField(max_length=100)
     
     notes = models.TextField(blank=True)
@@ -402,9 +402,9 @@ class Payment(models.Model):
     ]
 
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='payments')
-    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS)
+    payment_method = models.CharField(max_length=100, choices=PAYMENT_METHODS)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default='pending')
+    status = models.CharField(max_length=100, choices=PAYMENT_STATUS, default='pending')
     transaction_id = models.CharField(max_length=100, blank=True)
     gateway_response = models.JSONField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

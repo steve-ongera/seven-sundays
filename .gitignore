@@ -1,0 +1,63 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Django
+*.log
+*.pot
+*.pyc
+*.sqlite3
+db.sqlite3
+
+# Environments
+.env
+venv/
+env/
+ENV/
+.venv/
+.idea/
+.vscode/
+
+# Migrations (optional, keep if you want to ignore auto-generated migration files)
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# Static and media (usually served via CDN or storage in production)
+staticfiles/
+media/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Coverage and testing
+htmlcov/
+.coverage
+.tox/
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+
+# Pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# MyPy
+.mypy_cache/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Docker
+*.pid
+*.seed
+*.bak
+
+# Local settings (keep local secrets out of version control)
+config/settings/local.py

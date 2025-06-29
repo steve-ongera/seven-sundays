@@ -138,24 +138,24 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'  # For collectstatic
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Add to installed apps
-INSTALLED_APPS += ['storages']
+# # Add to installed apps
+# INSTALLED_APPS += ['storages']
 
-# AWS S3 Configuration
-AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
-#AWS_STORAGE_BUCKET_NAME_STATIC = env('AWS_STORAGE_BUCKET_NAME_STATIC')
-AWS_STORAGE_BUCKET_NAME_MEDIA = env('AWS_STORAGE_BUCKET_NAME_MEDIA')
-AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME', default='us-east-1')
-#AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME_STATIC}.s3.amazonaws.com'
-AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
-AWS_DEFAULT_ACL = 'public-read'
-AWS_QUERYSTRING_AUTH = False
+# # AWS S3 Configuration
+# AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+# AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+# #AWS_STORAGE_BUCKET_NAME_STATIC = env('AWS_STORAGE_BUCKET_NAME_STATIC')
+# AWS_STORAGE_BUCKET_NAME_MEDIA = env('AWS_STORAGE_BUCKET_NAME_MEDIA')
+# AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME', default='us-east-1')
+# #AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME_STATIC}.s3.amazonaws.com'
+# AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+# AWS_DEFAULT_ACL = 'public-read'
+# AWS_QUERYSTRING_AUTH = False
 
-# Static files configuration
-# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
+# # Static files configuration
+# # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# # STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
 
-# Media files configuration
-DEFAULT_FILE_STORAGE = 'yourproject.custom_storages.MediaStorage'
-MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME_MEDIA}.s3.amazonaws.com/media/'
+# # Media files configuration
+# DEFAULT_FILE_STORAGE = 'yourproject.custom_storages.MediaStorage'
+# MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME_MEDIA}.s3.amazonaws.com/media/'
